@@ -1,0 +1,171 @@
+<UserControl x:Class="CarCare360.Desktop.Views.ClientOrdersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:CarCare360.Desktop.Views"
+             Background="{StaticResource LightBackgroundBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <Border Grid.Row="0" Background="White"
+                BorderBrush="{StaticResource BorderGrayBrush}"
+                BorderThickness="0,0,0,1" Padding="24,16">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets"
+                               FontSize="24" VerticalAlignment="Center"
+                               Foreground="{StaticResource PrimaryDarkBlueBrush}"
+                               Margin="0,0,12,0"/>
+                    <TextBlock Text="Мои заказы" FontSize="22" FontWeight="SemiBold"
+                               Foreground="{StaticResource PrimaryDarkBlueBrush}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button Command="{Binding RefreshCommand}"
+                            Style="{StaticResource NeutralButtonStyle}"
+                            Width="38" Padding="0" ToolTip="Обновить" Margin="0,0,10,0">
+                        <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+                    </Button>
+                    <Button Command="{Binding CreateOrderCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            ToolTip="Создать заявку на обслуживание">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Text="Создать заявку" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Skeleton / DataGrid -->
+        <views:SkeletonLoading Grid.Row="1" Margin="16,8,16,0"
+                               Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"/>
+
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Orders}"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  SelectionMode="Single" GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column" AlternatingRowBackground="#FAFAFA"
+                  RowBackground="White" BorderThickness="0"
+                  CanUserResizeRows="False" FontSize="13" Margin="16,8,16,0"
+                  Visibility="{Binding IsLoading, Converter={StaticResource InverseBoolToVisibility}}">
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#3F51B5"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="{StaticResource PrimaryDarkBlueBrush}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontSize" Value="12"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="Padding" Value="12,10"/>
+                    <Setter Property="Height" Value="38"/>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="№ заказа" Binding="{Binding OrderID}" Width="90"/>
+                <DataGridTextColumn Header="Автомобиль" Binding="{Binding CarInfo}" Width="*"/>
+                <!-- Статус — цветная метка -->
+                <DataGridTemplateColumn Header="Статус" Width="140">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="6" Padding="10,3"
+                                    HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,2">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="#EEEEEE"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Status}" Value="Новый">
+                                                <Setter Property="Background" Value="#E3F2FD"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Status}" Value="В работе">
+                                                <Setter Property="Background" Value="#FFF3E0"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Status}" Value="Завершён">
+                                                <Setter Property="Background" Value="#E8F5E9"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Status}" Value="Отменён">
+                                                <Setter Property="Background" Value="#FFEBEE"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Text="{Binding Status}" FontSize="12" FontWeight="SemiBold">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#555"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="Новый">
+                                                    <Setter Property="Foreground" Value="#1565C0"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="В работе">
+                                                    <Setter Property="Foreground" Value="#E65100"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Завершён">
+                                                    <Setter Property="Foreground" Value="#2E7D32"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="Отменён">
+                                                    <Setter Property="Foreground" Value="#C62828"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Запланировано"
+                                    Binding="{Binding ScheduledDate, StringFormat=dd.MM.yyyy}"
+                                    Width="140"/>
+                <DataGridTextColumn Header="Дата заказа"
+                                    Binding="{Binding CreatedAt, StringFormat=dd.MM.yyyy}"
+                                    Width="130"/>
+                <DataGridTextColumn Header="Сумма (₽)"
+                                    Binding="{Binding TotalCost, StringFormat={}{0:N0}}"
+                                    Width="110">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Foreground" Value="{StaticResource AccentOrangeBrush}"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <!-- Кнопка «Подробнее» -->
+                <DataGridTemplateColumn Header="" Width="110" CanUserSort="False" CanUserResize="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Margin="4,2"
+                                    Command="{Binding DataContext.ViewOrderCommand,
+                                              RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Padding="8,4" FontSize="12">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="11" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Подробнее" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Статусбар -->
+        <Border Grid.Row="2" Background="White"
+                BorderBrush="{StaticResource BorderGrayBrush}"
+                BorderThickness="0,1,0,0" Padding="24,8">
+            <TextBlock Text="{Binding Status}" Foreground="#666" FontSize="12"/>
+        </Border>
+    </Grid>
+</UserControl>

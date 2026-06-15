@@ -1,0 +1,153 @@
+<Window x:Class="CarCare360.Desktop.Views.ClientCarAddDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:CarCare360.Desktop.ViewModels"
+        Title="Добавить автомобиль"
+        Width="480" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource LightBackgroundBrush}">
+
+    <Window.Resources>
+        <!-- Стиль метки поля -->
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"     Value="12"/>
+            <Setter Property="FontWeight"   Value="SemiBold"/>
+            <Setter Property="Foreground"   Value="#555"/>
+            <Setter Property="Margin"       Value="0,0,0,4"/>
+        </Style>
+        <!-- Стиль обёртки поля -->
+        <Style x:Key="FieldWrap" TargetType="StackPanel">
+            <Setter Property="Margin" Value="0,0,0,14"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Заголовок -->
+            <RowDefinition Height="Auto"/> <!-- Форма -->
+            <RowDefinition Height="Auto"/> <!-- Ошибка -->
+            <RowDefinition Height="Auto"/> <!-- Кнопки -->
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <Border Grid.Row="0" Background="{StaticResource PrimaryDarkBlueBrush}" Padding="24,18">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="&#xE804;" FontFamily="Segoe MDL2 Assets"
+                           FontSize="22" Foreground="White"
+                           VerticalAlignment="Center" Margin="0,0,12,0"/>
+                <TextBlock Text="Добавить автомобиль"
+                           FontSize="18" FontWeight="SemiBold"
+                           Foreground="White" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Форма -->
+        <StackPanel Grid.Row="1" Margin="24,20,24,4">
+
+            <!-- Марка -->
+            <StackPanel Style="{StaticResource FieldWrap}">
+                <TextBlock Text="Марка *" Style="{StaticResource FieldLabel}"/>
+                <ComboBox ItemsSource="{Binding Brands}"
+                          SelectedItem="{Binding SelectedBrand}"
+                          DisplayMemberPath="Name"
+                          FontSize="14" Height="36"/>
+            </StackPanel>
+
+            <!-- Модель -->
+            <StackPanel Style="{StaticResource FieldWrap}">
+                <TextBlock Text="Модель *" Style="{StaticResource FieldLabel}"/>
+                <ComboBox ItemsSource="{Binding Models}"
+                          SelectedItem="{Binding SelectedModel}"
+                          DisplayMemberPath="Name"
+                          FontSize="14" Height="36"/>
+            </StackPanel>
+
+            <!-- Гос. номер + Год в одной строке -->
+            <Grid Margin="0,0,0,14">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="120"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Гос. номер *" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Text="{Binding LicensePlate, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource ThemedTextBoxStyle}"
+                             CharacterCasing="Upper"
+                             ToolTip="Например: А123ВГ456"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Год выпуска" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Text="{Binding YearText, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource ThemedTextBoxStyle}"
+                             ToolTip="Например: 2020"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- VIN -->
+            <StackPanel Style="{StaticResource FieldWrap}">
+                <TextBlock Text="VIN-номер" Style="{StaticResource FieldLabel}"/>
+                <TextBox Text="{Binding VIN, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource ThemedTextBoxStyle}"
+                         CharacterCasing="Upper"
+                         MaxLength="17"
+                         FontFamily="Consolas"
+                         ToolTip="17 символов (необязательно)"/>
+            </StackPanel>
+
+            <!-- Цвет + Пробег в одной строке -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="140"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Цвет" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Text="{Binding Color, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource ThemedTextBoxStyle}"
+                             ToolTip="Например: Белый"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Пробег (км)" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Text="{Binding MileageText, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource ThemedTextBoxStyle}"
+                             ToolTip="Текущий пробег"/>
+                </StackPanel>
+            </Grid>
+
+        </StackPanel>
+
+        <!-- Сообщение об ошибке -->
+        <Border Grid.Row="2" Margin="24,0,24,8"
+                Background="#FFEBEE" CornerRadius="6" Padding="12,8"
+                Visibility="{Binding HasError, Converter={StaticResource BoolToVisibility}}">
+            <TextBlock Text="{Binding ErrorMessage}"
+                       Foreground="#C62828" FontSize="12" TextWrapping="Wrap"/>
+        </Border>
+
+        <!-- Кнопки -->
+        <Border Grid.Row="3" Background="White"
+                BorderBrush="{StaticResource BorderGrayBrush}"
+                BorderThickness="0,1,0,0" Padding="24,14">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Command="{Binding CancelCommand}"
+                        Style="{StaticResource NeutralButtonStyle}"
+                        Content="Отмена" Margin="0,0,10,0"/>
+                <Button Command="{Binding SaveCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets"
+                                   FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="Сохранить" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

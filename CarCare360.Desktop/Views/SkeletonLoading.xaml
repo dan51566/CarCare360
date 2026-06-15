@@ -1,0 +1,126 @@
+<UserControl x:Class="CarCare360.Desktop.Views.SkeletonLoading"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <UserControl.Resources>
+        <!-- Пульсирующий стиль для прямоугольников-заглушек -->
+        <Style x:Key="SkeletonRect" TargetType="Rectangle">
+            <Setter Property="Fill" Value="#E0E0E0"/>
+            <Setter Property="RadiusX" Value="4"/>
+            <Setter Property="RadiusY" Value="4"/>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             From="0.35" To="1"
+                                             Duration="0:0:0.9"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <!-- Анимация появления всего блока -->
+    <StackPanel Margin="24,12,24,0">
+        <!-- Имитация строки заголовка DataGrid -->
+        <Rectangle Height="38" Fill="#C8C8C8" RadiusX="4" RadiusY="4" Margin="0,0,0,4"/>
+
+        <!-- Имитация строк данных -->
+        <Grid Margin="0,0,0,3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="130"/>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="190"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <Rectangle Grid.Column="0" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0"/>
+            <Rectangle Grid.Column="1" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0"/>
+            <Rectangle Grid.Column="2" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0"/>
+            <Rectangle Grid.Column="3" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0"/>
+            <Rectangle Grid.Column="4" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0"/>
+            <Rectangle Grid.Column="5" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0"/>
+            <Rectangle Grid.Column="6" Style="{StaticResource SkeletonRect}" Height="34"/>
+        </Grid>
+
+        <Grid Margin="0,0,0,3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="130"/>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <Rectangle Grid.Column="0" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.7"/>
+            <Rectangle Grid.Column="1" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.65"/>
+            <Rectangle Grid.Column="2" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.7"/>
+            <Rectangle Grid.Column="3" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.6"/>
+            <Rectangle Grid.Column="4" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.7"/>
+            <Rectangle Grid.Column="5" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.65"/>
+            <Rectangle Grid.Column="6" Style="{StaticResource SkeletonRect}" Height="34" Opacity="0.7"/>
+        </Grid>
+
+        <Grid Margin="0,0,0,3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="130"/>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <Rectangle Grid.Column="0" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.55"/>
+            <Rectangle Grid.Column="1" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.6"/>
+            <Rectangle Grid.Column="2" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.55"/>
+            <Rectangle Grid.Column="3" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.5"/>
+            <Rectangle Grid.Column="4" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.55"/>
+            <Rectangle Grid.Column="5" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.6"/>
+            <Rectangle Grid.Column="6" Style="{StaticResource SkeletonRect}" Height="34" Opacity="0.55"/>
+        </Grid>
+
+        <Grid Margin="0,0,0,3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="130"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="190"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <Rectangle Grid.Column="0" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.7"/>
+            <Rectangle Grid.Column="1" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.65"/>
+            <Rectangle Grid.Column="2" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.7"/>
+            <Rectangle Grid.Column="3" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.6"/>
+            <Rectangle Grid.Column="4" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.7"/>
+            <Rectangle Grid.Column="5" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.65"/>
+            <Rectangle Grid.Column="6" Style="{StaticResource SkeletonRect}" Height="34" Opacity="0.7"/>
+        </Grid>
+
+        <Grid Margin="0,0,0,3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="130"/>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <Rectangle Grid.Column="0" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.45"/>
+            <Rectangle Grid.Column="1" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.5"/>
+            <Rectangle Grid.Column="2" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.45"/>
+            <Rectangle Grid.Column="3" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.4"/>
+            <Rectangle Grid.Column="4" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.45"/>
+            <Rectangle Grid.Column="5" Style="{StaticResource SkeletonRect}" Height="34" Margin="0,0,4,0" Opacity="0.5"/>
+            <Rectangle Grid.Column="6" Style="{StaticResource SkeletonRect}" Height="34" Opacity="0.45"/>
+        </Grid>
+    </StackPanel>
+</UserControl>

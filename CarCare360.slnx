@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CarCare360.Api/CarCare360.Api.csproj" />
+  <Project Path="CarCare360.Desktop/CarCare360.Desktop.csproj" />
+</Solution>

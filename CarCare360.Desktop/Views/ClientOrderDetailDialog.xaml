@@ -1,0 +1,335 @@
+<Window x:Class="CarCare360.Desktop.Views.ClientOrderDetailDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Детали заказа"
+        Width="620" Height="660"
+        MinHeight="520"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="{StaticResource LightBackgroundBrush}">
+
+    <Window.Resources>
+        <Style x:Key="SectionLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="11"/>
+            <Setter Property="Foreground" Value="#888"/>
+            <Setter Property="Margin"     Value="0,0,0,2"/>
+        </Style>
+        <Style x:Key="SectionValue" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="13"/>
+            <Setter Property="Foreground" Value="#222"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Шапка -->
+            <RowDefinition Height="*"/>    <!-- Тело -->
+            <RowDefinition Height="Auto"/> <!-- Панель ответа (только для Нового) -->
+            <RowDefinition Height="Auto"/> <!-- Итоги + закрыть -->
+        </Grid.RowDefinitions>
+
+        <!-- ══ Шапка ═══════════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Background="{StaticResource PrimaryDarkBlueBrush}" Padding="24,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock FontSize="20" FontWeight="Bold" Foreground="White">
+                        <Run Text="Заказ #"/>
+                        <Run Text="{Binding OrderId, Mode=OneWay}"/>
+                    </TextBlock>
+                    <TextBlock Text="{Binding CarInfo}" FontSize="13"
+                               Foreground="#90CAF9" Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <!-- Бейдж статуса -->
+                <Border Grid.Column="1" CornerRadius="8" Padding="14,6"
+                        VerticalAlignment="Center"
+                        Background="{Binding StatusColor}">
+                    <TextBlock Text="{Binding Status}" FontSize="13"
+                               FontWeight="SemiBold" Foreground="White"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ══ Тело (прокручиваемое) ════════════════════════════════════ -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="24,16,24,0">
+
+                <!-- Метаданные заказа -->
+                <Border Background="White" CornerRadius="8" Padding="16,12"
+                        BorderBrush="{StaticResource BorderGrayBrush}"
+                        BorderThickness="1" Margin="0,0,0,12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="Дата создания"/>
+                            <TextBlock Style="{StaticResource SectionValue}"
+                                       Text="{Binding CreatedAt}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="Запланировано"/>
+                            <TextBlock Style="{StaticResource SectionValue}"
+                                       Text="{Binding ScheduledDate}"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Услуги -->
+                <Border Background="White" CornerRadius="8" Padding="16,12"
+                        BorderBrush="{StaticResource BorderGrayBrush}"
+                        BorderThickness="1" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="Услуги" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryDarkBlueBrush}"
+                                   Margin="0,0,0,8"/>
+                        <ItemsControl ItemsSource="{Binding Services}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding ServiceName}"
+                                                   FontSize="13" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1"
+                                                   FontSize="13" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource AccentOrangeBrush}">
+                                            <Run Text="{Binding Price, StringFormat={}{0:N0}, Mode=OneWay}"/>
+                                            <Run Text=" ₽"/>
+                                        </TextBlock>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <!-- Пусто -->
+                        <TextBlock Text="Услуги не добавлены" FontSize="12"
+                                   Foreground="#AAAAAA" Margin="0,4,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Services.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Запчасти -->
+                <Border Background="White" CornerRadius="8" Padding="16,12"
+                        BorderBrush="{StaticResource BorderGrayBrush}"
+                        BorderThickness="1" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="Запчасти" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryDarkBlueBrush}"
+                                   Margin="0,0,0,8"/>
+                        <ItemsControl ItemsSource="{Binding Parts}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="80"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding PartName}" FontSize="13"/>
+                                        <TextBlock Grid.Column="1" FontSize="12" Foreground="#888"
+                                                   VerticalAlignment="Center" Margin="0,0,12,0">
+                                            <Run Text="{Binding Qty, Mode=OneWay}"/>
+                                            <Run Text=" шт."/>
+                                        </TextBlock>
+                                        <TextBlock Grid.Column="2" FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Right"
+                                                   Foreground="{StaticResource AccentOrangeBrush}">
+                                            <Run Text="{Binding Total, StringFormat={}{0:N0}, Mode=OneWay}"/>
+                                            <Run Text=" ₽"/>
+                                        </TextBlock>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Запчасти не добавлены" FontSize="12"
+                                   Foreground="#AAAAAA" Margin="0,4,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Parts.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Примечания мастера -->
+                <Border Background="White" CornerRadius="8" Padding="16,12"
+                        BorderBrush="{StaticResource BorderGrayBrush}"
+                        BorderThickness="1" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="Примечания мастера" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryDarkBlueBrush}" Margin="0,0,0,6"/>
+                        <TextBlock Text="{Binding MechanicNotes}" FontSize="13"
+                                   Foreground="#444" TextWrapping="Wrap">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding MechanicNotes}" Value="">
+                                            <Setter Property="Text" Value="—"/>
+                                            <Setter Property="Foreground" Value="#AAAAAA"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Ошибка / информация -->
+                <Border CornerRadius="6" Padding="12,8" Margin="0,0,0,4"
+                        Visibility="{Binding ErrorMessage, Converter={StaticResource BoolToVisibility}}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="#E3F2FD"/>
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ErrorMessage}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock Text="{Binding ErrorMessage}" FontSize="12"
+                               Foreground="#1565C0" TextWrapping="Wrap"/>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ══ Панель ответа клиента (только для статуса «Новый») ════════ -->
+        <Border Grid.Row="2" Background="#FFFDE7"
+                BorderBrush="#FFE082" BorderThickness="0,1,0,0"
+                Padding="24,14"
+                Visibility="{Binding IsClientPending, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel>
+                <TextBlock Text="Ваш ответ на предложение мастера" FontSize="13"
+                           FontWeight="SemiBold" Foreground="#E65100" Margin="0,0,0,10"/>
+
+                <!-- Поле пожеланий -->
+                <Border BorderBrush="{StaticResource BorderGrayBrush}"
+                        BorderThickness="1" CornerRadius="6" Background="White"
+                        Margin="0,0,0,10">
+                    <TextBox Text="{Binding ClientNotes, UpdateSourceTrigger=PropertyChanged}"
+                             BorderThickness="0" Background="Transparent"
+                             FontSize="12" Padding="10,8"
+                             AcceptsReturn="True" TextWrapping="Wrap"
+                             Height="60" VerticalScrollBarVisibility="Auto"
+                             VerticalContentAlignment="Top"
+                             ToolTip="Опишите, что хотите изменить (необходимо для кнопки «Написать пожелание»)"/>
+                </Border>
+
+                <!-- Три кнопки ответа -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Принять -->
+                    <Button Grid.Column="0" Command="{Binding AgreeCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Background="#4CAF50" ToolTip="Согласен на цену — заказ передаётся мастеру">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="Принять цену" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Написать пожелание -->
+                    <Button Grid.Column="2" Command="{Binding RejectCommand}"
+                            Style="{StaticResource NeutralButtonStyle}"
+                            ToolTip="Напишите пожелание выше и нажмите эту кнопку">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="Написать пожелание" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Отменить заказ -->
+                    <Button Grid.Column="4" Command="{Binding CancelCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Background="#F44336"
+                            ToolTip="Отменить заказ полностью">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="Отменить заказ" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- ══ Итоги + кнопка закрыть ═══════════════════════════════════ -->
+        <Border Grid.Row="3" Background="White"
+                BorderBrush="{StaticResource BorderGrayBrush}"
+                BorderThickness="0,1,0,0" Padding="24,14">
+            <Grid>
+                <!-- Итоги -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel Margin="0,0,24,0">
+                        <TextBlock Text="Услуги" FontSize="11" Foreground="#888"/>
+                        <TextBlock FontSize="14" FontWeight="SemiBold">
+                            <Run Text="{Binding ServicesTotalCost, StringFormat={}{0:N0}, Mode=OneWay}"/>
+                            <Run Text=" ₽"/>
+                        </TextBlock>
+                    </StackPanel>
+                    <TextBlock Text="+" FontSize="16" Foreground="#BBB"
+                               VerticalAlignment="Center" Margin="0,0,24,0"/>
+                    <StackPanel Margin="0,0,24,0">
+                        <TextBlock Text="Запчасти" FontSize="11" Foreground="#888"/>
+                        <TextBlock FontSize="14" FontWeight="SemiBold">
+                            <Run Text="{Binding PartsTotalCost, StringFormat={}{0:N0}, Mode=OneWay}"/>
+                            <Run Text=" ₽"/>
+                        </TextBlock>
+                    </StackPanel>
+                    <Rectangle Width="1" Fill="{StaticResource BorderGrayBrush}" Margin="0,4"/>
+                    <StackPanel Margin="24,0,0,0">
+                        <TextBlock Text="ИТОГО" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryDarkBlueBrush}"/>
+                        <TextBlock FontSize="20" FontWeight="Bold"
+                                   Foreground="{StaticResource AccentOrangeBrush}">
+                            <Run Text="{Binding GrandTotal, StringFormat={}{0:N0}, Mode=OneWay}"/>
+                            <Run Text=" ₽"/>
+                        </TextBlock>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Закрыть -->
+                <Button HorizontalAlignment="Right"
+                        Command="{Binding CloseCommand}"
+                        Style="{StaticResource NeutralButtonStyle}"
+                        Content="Закрыть" Width="120"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

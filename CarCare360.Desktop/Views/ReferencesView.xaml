@@ -1,0 +1,1058 @@
+<UserControl x:Class="CarCare360.Desktop.Views.ReferencesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource LightBackgroundBrush}">
+
+    <UserControl.Resources>
+        <!-- Стиль кнопки бокового меню -->
+        <Style x:Key="SideNavButtonStyle" TargetType="Button">
+            <Setter Property="Background"                 Value="Transparent"/>
+            <Setter Property="Foreground"                 Value="White"/>
+            <Setter Property="FontSize"                   Value="13"/>
+            <Setter Property="FontWeight"                 Value="Regular"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding"                    Value="16,13"/>
+            <Setter Property="Height"                     Value="46"/>
+            <Setter Property="BorderThickness"            Value="0"/>
+            <Setter Property="Cursor"                     Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="4,0,0,0"
+                                BorderBrush="Transparent"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{StaticResource PrimaryDarkBlueHoverBrush}"/>
+                                <Setter TargetName="border" Property="BorderBrush"
+                                        Value="{StaticResource AccentOrangeBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />  <!-- Заголовок -->
+            <RowDefinition Height="*"    />  <!-- Sidebar + Content -->
+        </Grid.RowDefinitions>
+
+        <!-- ════ Заголовок ════════════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Background="White"
+                BorderBrush="{StaticResource BorderGrayBrush}"
+                BorderThickness="0,0,0,1" Padding="24,16">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="&#xE736;" FontFamily="Segoe MDL2 Assets"
+                           FontSize="24" VerticalAlignment="Center"
+                           Foreground="{StaticResource PrimaryDarkBlueBrush}"
+                           Margin="0,0,12,0"/>
+                <TextBlock Text="Справочники"
+                           FontSize="22" FontWeight="SemiBold"
+                           Foreground="{StaticResource PrimaryDarkBlueBrush}" />
+            </StackPanel>
+        </Border>
+
+        <!-- ════ Sidebar + Content ═════════════════════════════════════════════ -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ── Левое меню ── -->
+            <Border Grid.Column="0" Background="{StaticResource PrimaryDarkBlueBrush}">
+                <StackPanel>
+
+                    <!-- Услуги (index=0) -->
+                    <Button Content="Услуги"
+                            Command="{Binding SetTabCommand}" CommandParameter="0">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource SideNavButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTabIndex}" Value="0">
+                                        <Setter Property="Background"
+                                                Value="{StaticResource PrimaryDarkBlueHoverBrush}"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{StaticResource PrimaryDarkBlueHoverBrush}"
+                                                            BorderThickness="4,0,0,0"
+                                                            BorderBrush="{StaticResource AccentOrangeBrush}"
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Left"
+                                                                          VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- Боксы (index=1) -->
+                    <Button Content="Боксы"
+                            Command="{Binding SetTabCommand}" CommandParameter="1">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource SideNavButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTabIndex}" Value="1">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{StaticResource PrimaryDarkBlueHoverBrush}"
+                                                            BorderThickness="4,0,0,0"
+                                                            BorderBrush="{StaticResource AccentOrangeBrush}"
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Left"
+                                                                          VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- Специализации (index=2) -->
+                    <Button Content="Специализации"
+                            Command="{Binding SetTabCommand}" CommandParameter="2">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource SideNavButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTabIndex}" Value="2">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{StaticResource PrimaryDarkBlueHoverBrush}"
+                                                            BorderThickness="4,0,0,0"
+                                                            BorderBrush="{StaticResource AccentOrangeBrush}"
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Left"
+                                                                          VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- Марки и модели (index=3) -->
+                    <Button Content="Марки и модели"
+                            Command="{Binding SetTabCommand}" CommandParameter="3">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource SideNavButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedTabIndex}" Value="3">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{StaticResource PrimaryDarkBlueHoverBrush}"
+                                                            BorderThickness="4,0,0,0"
+                                                            BorderBrush="{StaticResource AccentOrangeBrush}"
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Left"
+                                                                          VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                </StackPanel>
+            </Border>
+
+            <!-- ── Правая панель контента ── -->
+            <Grid Grid.Column="1">
+
+                <!-- ══ Услуги (SelectedTabIndex=0) ══════════════════════════ -->
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedTabIndex}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Background="White" BorderBrush="{StaticResource BorderGrayBrush}"
+                            BorderThickness="0,0,0,1" Padding="16,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <Button Command="{Binding Services.RefreshCommand}"
+                                        Style="{StaticResource NeutralButtonStyle}"
+                                        Width="36" Padding="0" Margin="0,0,8,0" ToolTip="Обновить">
+                                    <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                                </Button>
+                                <Button Command="{Binding Services.ShowAddCommand}"
+                                        Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Добавить" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Command="{Binding Services.ShowEditCommand}"
+                                        Style="{StaticResource NeutralButtonStyle}" Margin="0,0,8,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Изменить" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Command="{Binding Services.DeleteCommand}"
+                                        Style="{StaticResource NeutralButtonStyle}" Foreground="#D32F2F">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Удалить" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                            <Border Grid.Column="1" Background="#F5F5F5"
+                                    BorderBrush="{StaticResource BorderGrayBrush}"
+                                    BorderThickness="1" CornerRadius="6"
+                                    MaxWidth="220" HorizontalAlignment="Right" Margin="8,0,0,0">
+                                <Grid>
+                                    <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="12" Foreground="#888"
+                                               VerticalAlignment="Center" Margin="7,0,0,0"
+                                               IsHitTestVisible="False"/>
+                                    <TextBox Text="{Binding Services.SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                             BorderThickness="0" Background="Transparent"
+                                             FontSize="12" Padding="22,6,6,6"
+                                             VerticalContentAlignment="Center"/>
+                                    <TextBlock Text="Поиск…" Foreground="#AAA" FontSize="12"
+                                               VerticalAlignment="Center" Margin="24,0,0,0"
+                                               IsHitTestVisible="False">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Services.SearchText}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Services.Items}"
+                              SelectedItem="{Binding Services.SelectedItem}"
+                              AutoGenerateColumns="False" IsReadOnly="True"
+                              SelectionMode="Single" GridLinesVisibility="Horizontal"
+                              HeadersVisibility="Column" AlternatingRowBackground="#FAFAFA"
+                              RowBackground="White" BorderThickness="0"
+                              CanUserResizeRows="False" CanUserReorderColumns="False" FontSize="13"
+                              Margin="16,8,16,0">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Padding" Value="8,0"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource PrimaryDarkBlueBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Padding" Value="12,0"/>
+                                <Setter Property="Height" Value="38"/>
+                                <Setter Property="BorderBrush" Value="#283593"/>
+                                <Setter Property="BorderThickness" Value="0,0,1,0"/>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Height" Value="40"/>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Padding" Value="12,0"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Описание" Binding="{Binding Description}" Width="*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Padding" Value="8,0"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Норм.ч"
+                                                Binding="{Binding NormHour, StringFormat={}{0:F1}}" Width="75">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Цена, ₽"
+                                                Binding="{Binding BasePrice, StringFormat={}{0:N2}}" Width="95">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Margin" Value="0,0,8,0"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                        <Setter Property="Foreground" Value="{StaticResource AccentOrangeBrush}"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Border Grid.Row="2" Background="#F5F5F5" CornerRadius="0,0,0,0"
+                            BorderBrush="{StaticResource BorderGrayBrush}"
+                            BorderThickness="0,1,0,0" Padding="16,10"
+                            Visibility="{Binding Services.IsEditing, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Название *" FontSize="11" Foreground="#777"/>
+                                <TextBlock Grid.Column="1" Text="Описание"   FontSize="11" Foreground="#777"/>
+                                <TextBlock Grid.Column="2" Text="Норм. ч"    FontSize="11" Foreground="#777"/>
+                                <TextBlock Grid.Column="3" Text="Цена, ₽"    FontSize="11" Foreground="#777"/>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Margin="0,0,8,0" Style="{StaticResource ThemedTextBoxStyle}"
+                                         Text="{Binding Services.EditName, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Grid.Column="1" Margin="0,0,8,0" Style="{StaticResource ThemedTextBoxStyle}"
+                                         Text="{Binding Services.EditDescription, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Grid.Column="2" Margin="0,0,8,0" Style="{StaticResource ThemedTextBoxStyle}"
+                                         Text="{Binding Services.EditNormHour, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Grid.Column="3" Margin="0,0,8,0" Style="{StaticResource ThemedTextBoxStyle}"
+                                         Text="{Binding Services.EditPrice, UpdateSourceTrigger=PropertyChanged}"/>
+                                <StackPanel Grid.Column="4" Orientation="Horizontal">
+                                    <Button Content="&#xE74E;  Сохранить" Command="{Binding Services.SaveEditCommand}"
+                                            Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0"/>
+                                    <Button Content="Отмена" Command="{Binding Services.CancelEditCommand}"
+                                            Style="{StaticResource NeutralButtonStyle}"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="3" Background="White" BorderBrush="{StaticResource BorderGrayBrush}"
+                            BorderThickness="0,1,0,0" Padding="16,6">
+                        <TextBlock Text="{Binding Services.StatusMessage}" Foreground="#666" FontSize="12"/>
+                    </Border>
+                </Grid>
+
+                <!-- ══ Боксы (SelectedTabIndex=1) ════════════════════════════ -->
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedTabIndex}" Value="1">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Background="White" BorderBrush="{StaticResource BorderGrayBrush}"
+                            BorderThickness="0,0,0,1" Padding="16,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <Button Command="{Binding Bays.RefreshCommand}"
+                                        Style="{StaticResource NeutralButtonStyle}"
+                                        Width="36" Padding="0" Margin="0,0,8,0" ToolTip="Обновить">
+                                    <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                                </Button>
+                                <Button Command="{Binding Bays.ShowAddCommand}"
+                                        Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Добавить" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Command="{Binding Bays.ShowEditCommand}"
+                                        Style="{StaticResource NeutralButtonStyle}" Margin="0,0,8,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Изменить" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Command="{Binding Bays.ToggleActiveCommand}"
+                                        Style="{StaticResource NeutralButtonStyle}" Margin="0,0,8,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xEA3A;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Вкл/Выкл" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Command="{Binding Bays.DeleteCommand}"
+                                        Style="{StaticResource NeutralButtonStyle}" Foreground="#D32F2F">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Удалить" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                            <Border Grid.Column="1" Background="#F5F5F5"
+                                    BorderBrush="{StaticResource BorderGrayBrush}"
+                                    BorderThickness="1" CornerRadius="6"
+                                    MaxWidth="220" HorizontalAlignment="Right" Margin="8,0,0,0">
+                                <Grid>
+                                    <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="12" Foreground="#888"
+                                               VerticalAlignment="Center" Margin="7,0,0,0"
+                                               IsHitTestVisible="False"/>
+                                    <TextBox Text="{Binding Bays.SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                             BorderThickness="0" Background="Transparent"
+                                             FontSize="12" Padding="22,6,6,6"
+                                             VerticalContentAlignment="Center"/>
+                                    <TextBlock Text="Поиск…" Foreground="#AAA" FontSize="12"
+                                               VerticalAlignment="Center" Margin="24,0,0,0"
+                                               IsHitTestVisible="False">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Bays.SearchText}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Bays.Items}"
+                              SelectedItem="{Binding Bays.SelectedItem}"
+                              AutoGenerateColumns="False" IsReadOnly="True"
+                              SelectionMode="Single" GridLinesVisibility="Horizontal"
+                              HeadersVisibility="Column" AlternatingRowBackground="#FAFAFA"
+                              RowBackground="White" BorderThickness="0"
+                              CanUserResizeRows="False" CanUserReorderColumns="False" FontSize="13"
+                              Margin="16,8,16,0">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Padding" Value="8,0"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource PrimaryDarkBlueBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Padding" Value="12,0"/>
+                                <Setter Property="Height" Value="38"/>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Height" Value="40"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                        <Setter Property="Opacity" Value="0.45"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Padding" Value="12,0"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTemplateColumn Header="Статус" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="8" Padding="8,3"
+                                                HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#FFEBEE"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                            <Setter Property="Background" Value="#E8F5E9"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock FontSize="11" FontWeight="SemiBold">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text"       Value="Закрыт"/>
+                                                        <Setter Property="Foreground" Value="#C62828"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                                <Setter Property="Text"       Value="Открыт"/>
+                                                                <Setter Property="Foreground" Value="#2E7D32"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Border Grid.Row="2" Background="#F5F5F5"
+                            BorderBrush="{StaticResource BorderGrayBrush}"
+                            BorderThickness="0,1,0,0" Padding="16,10"
+                            Visibility="{Binding Bays.IsEditing, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel>
+                            <TextBlock Text="Название *" FontSize="11" Foreground="#777" Margin="0,0,0,4"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Margin="0,0,8,0" Style="{StaticResource ThemedTextBoxStyle}"
+                                         Text="{Binding Bays.EditName, UpdateSourceTrigger=PropertyChanged}"/>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Button Content="&#xE74E;  Сохранить" Command="{Binding Bays.SaveEditCommand}"
+                                            Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0"/>
+                                    <Button Content="Отмена" Command="{Binding Bays.CancelEditCommand}"
+                                            Style="{StaticResource NeutralButtonStyle}"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="3" Background="White" BorderBrush="{StaticResource BorderGrayBrush}"
+                            BorderThickness="0,1,0,0" Padding="16,6">
+                        <TextBlock Text="{Binding Bays.StatusMessage}" Foreground="#666" FontSize="12"/>
+                    </Border>
+                </Grid>
+
+                <!-- ══ Специализации (SelectedTabIndex=2) ═══════════════════ -->
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedTabIndex}" Value="2">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Background="White" BorderBrush="{StaticResource BorderGrayBrush}"
+                            BorderThickness="0,0,0,1" Padding="16,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <Button Command="{Binding Specializations.RefreshCommand}"
+                                        Style="{StaticResource NeutralButtonStyle}"
+                                        Width="36" Padding="0" Margin="0,0,8,0" ToolTip="Обновить">
+                                    <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
+                                </Button>
+                                <Button Command="{Binding Specializations.ShowAddCommand}"
+                                        Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Добавить" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Command="{Binding Specializations.ShowEditCommand}"
+                                        Style="{StaticResource NeutralButtonStyle}" Margin="0,0,8,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Изменить" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Command="{Binding Specializations.DeleteCommand}"
+                                        Style="{StaticResource NeutralButtonStyle}" Foreground="#D32F2F">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Удалить" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                            <Border Grid.Column="1" Background="#F5F5F5"
+                                    BorderBrush="{StaticResource BorderGrayBrush}"
+                                    BorderThickness="1" CornerRadius="6"
+                                    MaxWidth="220" HorizontalAlignment="Right" Margin="8,0,0,0">
+                                <Grid>
+                                    <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets"
+                                               FontSize="12" Foreground="#888"
+                                               VerticalAlignment="Center" Margin="7,0,0,0"
+                                               IsHitTestVisible="False"/>
+                                    <TextBox Text="{Binding Specializations.SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                             BorderThickness="0" Background="Transparent"
+                                             FontSize="12" Padding="22,6,6,6"
+                                             VerticalContentAlignment="Center"/>
+                                    <TextBlock Text="Поиск…" Foreground="#AAA" FontSize="12"
+                                               VerticalAlignment="Center" Margin="24,0,0,0"
+                                               IsHitTestVisible="False">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Specializations.SearchText}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Specializations.Items}"
+                              SelectedItem="{Binding Specializations.SelectedItem}"
+                              AutoGenerateColumns="False" IsReadOnly="True"
+                              SelectionMode="Single" GridLinesVisibility="Horizontal"
+                              HeadersVisibility="Column" AlternatingRowBackground="#FAFAFA"
+                              RowBackground="White" BorderThickness="0"
+                              CanUserResizeRows="False" CanUserReorderColumns="False" FontSize="13"
+                              Margin="16,8,16,0">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Padding" Value="8,0"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource PrimaryDarkBlueBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                <Setter Property="Padding" Value="12,0"/>
+                                <Setter Property="Height" Value="38"/>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Height" Value="40"/>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Специализация" Binding="{Binding Name}" Width="*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Padding" Value="12,0"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Border Grid.Row="2" Background="#F5F5F5"
+                            BorderBrush="{StaticResource BorderGrayBrush}"
+                            BorderThickness="0,1,0,0" Padding="16,10"
+                            Visibility="{Binding Specializations.IsEditing, Converter={StaticResource BoolToVisibility}}">
+                        <StackPanel>
+                            <TextBlock Text="Название *" FontSize="11" Foreground="#777" Margin="0,0,0,4"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Margin="0,0,8,0" Style="{StaticResource ThemedTextBoxStyle}"
+                                         Text="{Binding Specializations.EditName, UpdateSourceTrigger=PropertyChanged}"/>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Button Content="&#xE74E;  Сохранить" Command="{Binding Specializations.SaveEditCommand}"
+                                            Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0"/>
+                                    <Button Content="Отмена" Command="{Binding Specializations.CancelEditCommand}"
+                                            Style="{StaticResource NeutralButtonStyle}"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="3" Background="White" BorderBrush="{StaticResource BorderGrayBrush}"
+                            BorderThickness="0,1,0,0" Padding="16,6">
+                        <TextBlock Text="{Binding Specializations.StatusMessage}" Foreground="#666" FontSize="12"/>
+                    </Border>
+                </Grid>
+
+                <!-- ══ Марки и модели (SelectedTabIndex=3) ══════════════════ -->
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedTabIndex}" Value="3">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Левая панель: Марки -->
+                    <Grid Grid.Column="0" Margin="0,0,4,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Background="White" BorderBrush="{StaticResource BorderGrayBrush}"
+                                BorderThickness="0,0,0,1" Padding="16,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Марки" FontSize="14" FontWeight="SemiBold"
+                                           Foreground="{StaticResource PrimaryDarkBlueBrush}" VerticalAlignment="Center"/>
+                                <Border Grid.Column="1" Background="#F5F5F5"
+                                        BorderBrush="{StaticResource BorderGrayBrush}"
+                                        BorderThickness="1" CornerRadius="6"
+                                        MaxWidth="160" Margin="10,0" VerticalAlignment="Center">
+                                    <Grid>
+                                        <TextBlock Text="🔍" FontSize="12" Foreground="#888"
+                                                   VerticalAlignment="Center" Margin="7,0,0,0"
+                                                   IsHitTestVisible="False"/>
+                                        <TextBox Text="{Binding Brands.BrandSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                                 BorderThickness="0" Background="Transparent"
+                                                 FontSize="12" Padding="22,5,6,5"
+                                                 VerticalContentAlignment="Center"/>
+                                        <TextBlock Text="Поиск…" Foreground="#AAA" FontSize="12"
+                                                   VerticalAlignment="Center" Margin="24,0,0,0"
+                                                   IsHitTestVisible="False">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Brands.BrandSearchText}" Value="">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Grid>
+                                </Border>
+                                <!-- Баг 4 — увеличены кнопки (было Width=36 icon-only),
+                                     добавлены текстовые подписи для читаемости. -->
+                                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                    <Button Command="{Binding Brands.BrandShowAddCommand}"
+                                            Style="{StaticResource PrimaryButtonStyle}"
+                                            MinWidth="95" Height="32" Padding="10,0" Margin="0,0,6,0">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                       VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                            <TextBlock Text="Добавить" FontSize="13" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Command="{Binding Brands.BrandShowEditCommand}"
+                                            Style="{StaticResource NeutralButtonStyle}"
+                                            MinWidth="95" Height="32" Padding="10,0" Margin="0,0,6,0">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                       VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                            <TextBlock Text="Изменить" FontSize="13" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Command="{Binding Brands.BrandDeleteCommand}"
+                                            Style="{StaticResource NeutralButtonStyle}"
+                                            MinWidth="95" Height="32" Padding="10,0" Foreground="#D32F2F">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                       Foreground="#D32F2F" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                            <TextBlock Text="Удалить" FontSize="13" Foreground="#D32F2F"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Brands.Brands}"
+                                  SelectedItem="{Binding Brands.SelectedBrand}"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  SelectionMode="Single" GridLinesVisibility="Horizontal"
+                                  HeadersVisibility="Column" AlternatingRowBackground="#FAFAFA"
+                                  RowBackground="White" BorderThickness="0"
+                                  CanUserResizeRows="False" CanUserReorderColumns="False" FontSize="13"
+                                  Margin="16,8,8,0">
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Padding" Value="8,0"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{StaticResource PrimaryDarkBlueBrush}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="FontSize" Value="12"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Padding" Value="12,0"/>
+                                    <Setter Property="Height" Value="38"/>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Height" Value="40"/>
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Марка" Binding="{Binding Name}" Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Padding" Value="12,0"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Страна" Binding="{Binding Country}" Width="110">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Padding" Value="8,0"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Border Grid.Row="2" Background="#F5F5F5"
+                                BorderBrush="{StaticResource BorderGrayBrush}"
+                                BorderThickness="0,1,0,0" Padding="16,10"
+                                Visibility="{Binding Brands.IsEditingBrand, Converter={StaticResource BoolToVisibility}}">
+                            <StackPanel>
+                                <Grid Margin="0,0,0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="120"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Марка *"  FontSize="11" Foreground="#777"/>
+                                    <TextBlock Grid.Column="1" Text="Страна" FontSize="11" Foreground="#777"/>
+                                </Grid>
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="120"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Margin="0,0,8,0" Style="{StaticResource ThemedTextBoxStyle}"
+                                             Text="{Binding Brands.EditBrandName, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Grid.Column="1" Style="{StaticResource ThemedTextBoxStyle}"
+                                             Text="{Binding Brands.EditBrandCountry, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Grid>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="&#xE74E;  Сохранить" Command="{Binding Brands.BrandSaveCommand}"
+                                            Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0"/>
+                                    <Button Content="Отмена" Command="{Binding Brands.BrandCancelCommand}"
+                                            Style="{StaticResource NeutralButtonStyle}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="3" Background="White" BorderBrush="{StaticResource BorderGrayBrush}"
+                                BorderThickness="0,1,0,0" Padding="16,6">
+                            <TextBlock Text="{Binding Brands.StatusMessage}" Foreground="#666" FontSize="12"/>
+                        </Border>
+                    </Grid>
+
+                    <!-- Правая панель: Модели -->
+                    <Grid Grid.Column="1" Margin="4,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Background="White" BorderBrush="{StaticResource BorderGrayBrush}"
+                                BorderThickness="0,0,0,1" Padding="16,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Модели" FontSize="14" FontWeight="SemiBold"
+                                           Foreground="{StaticResource PrimaryDarkBlueBrush}" VerticalAlignment="Center"/>
+                                <!-- Баг 4 — кнопки секции «Модели» — аналогично секции «Бренды». -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Button Command="{Binding Brands.ModelShowAddCommand}"
+                                            Style="{StaticResource PrimaryButtonStyle}"
+                                            MinWidth="95" Height="32" Padding="10,0" Margin="0,0,6,0">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                       VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                            <TextBlock Text="Добавить" FontSize="13" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Command="{Binding Brands.ModelShowEditCommand}"
+                                            Style="{StaticResource NeutralButtonStyle}"
+                                            MinWidth="95" Height="32" Padding="10,0" Margin="0,0,6,0">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                       VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                            <TextBlock Text="Изменить" FontSize="13" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Command="{Binding Brands.ModelDeleteCommand}"
+                                            Style="{StaticResource NeutralButtonStyle}"
+                                            MinWidth="95" Height="32" Padding="10,0" Foreground="#D32F2F">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                       Foreground="#D32F2F" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                            <TextBlock Text="Удалить" FontSize="13" Foreground="#D32F2F"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Brands.BrandModels}"
+                                  SelectedItem="{Binding Brands.SelectedModel}"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  SelectionMode="Single" GridLinesVisibility="Horizontal"
+                                  HeadersVisibility="Column" AlternatingRowBackground="#FAFAFA"
+                                  RowBackground="White" BorderThickness="0"
+                                  CanUserResizeRows="False" CanUserReorderColumns="False" FontSize="13"
+                                  Margin="8,8,16,0">
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Padding" Value="8,0"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="{StaticResource PrimaryDarkBlueBrush}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="FontSize" Value="12"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Padding" Value="12,0"/>
+                                    <Setter Property="Height" Value="38"/>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Height" Value="40"/>
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Модель" Binding="{Binding Name}" Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Padding" Value="12,0"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Border Grid.Row="2" Background="#F5F5F5"
+                                BorderBrush="{StaticResource BorderGrayBrush}"
+                                BorderThickness="0,1,0,0" Padding="16,10"
+                                Visibility="{Binding Brands.IsEditingModel, Converter={StaticResource BoolToVisibility}}">
+                            <StackPanel>
+                                <TextBlock Text="Название модели *" FontSize="11" Foreground="#777" Margin="0,0,0,4"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Margin="0,0,8,0" Style="{StaticResource ThemedTextBoxStyle}"
+                                             Text="{Binding Brands.EditModelName, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <Button Content="&#xE74E;  Сохранить" Command="{Binding Brands.ModelSaveCommand}"
+                                                Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,8,0"/>
+                                        <Button Content="Отмена" Command="{Binding Brands.ModelCancelCommand}"
+                                                Style="{StaticResource NeutralButtonStyle}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

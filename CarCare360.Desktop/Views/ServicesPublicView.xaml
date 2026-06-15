@@ -1,0 +1,81 @@
+<UserControl x:Class="CarCare360.Desktop.Views.ServicesPublicView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:CarCare360.Desktop.Views"
+             Background="{StaticResource LightBackgroundBrush}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <Border Grid.Row="0" Background="White"
+                BorderBrush="{StaticResource BorderGrayBrush}"
+                BorderThickness="0,0,0,1" Padding="24,16">
+            <Grid>
+                <StackPanel>
+                    <TextBlock Text="Услуги и цены" FontSize="22" FontWeight="SemiBold"
+                               Foreground="{StaticResource PrimaryDarkBlueBrush}"/>
+                    <TextBlock Text="Актуальный прайс-лист сервисного центра"
+                               FontSize="12" Foreground="#888" Margin="0,2,0,0"/>
+                </StackPanel>
+                <Button Content="↻" Command="{Binding RefreshCommand}"
+                        Style="{StaticResource NeutralButtonStyle}"
+                        HorizontalAlignment="Right" VerticalAlignment="Center"
+                        Width="38" Padding="0" FontSize="16" ToolTip="Обновить"/>
+            </Grid>
+        </Border>
+
+        <!-- Skeleton / DataGrid -->
+        <views:SkeletonLoading Grid.Row="1" Margin="16,8,16,0"
+                               Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"/>
+
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Services}"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  SelectionMode="Single" GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column" AlternatingRowBackground="#FAFAFA"
+                  RowBackground="White" BorderThickness="0"
+                  CanUserResizeRows="False" FontSize="13" Margin="16,8,16,0"
+                  Visibility="{Binding IsLoading, Converter={StaticResource InverseBoolToVisibility}}">
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#3F51B5"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="{StaticResource PrimaryDarkBlueBrush}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontSize" Value="12"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="Padding" Value="12,10"/>
+                    <Setter Property="Height" Value="38"/>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Услуга" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Нормо-часы"
+                                    Binding="{Binding NormHour, StringFormat={}{0:N1}}"
+                                    Width="160"/>
+                <DataGridTextColumn Header="Цена (₽)"
+                                    Binding="{Binding Price, StringFormat={}{0:N0}}"
+                                    Width="130">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Foreground" Value="{StaticResource AccentOrangeBrush}"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Статусбар -->
+        <Border Grid.Row="2" Background="White"
+                BorderBrush="{StaticResource BorderGrayBrush}"
+                BorderThickness="0,1,0,0" Padding="24,8">
+            <TextBlock Text="{Binding Status}" Foreground="#666" FontSize="12"/>
+        </Border>
+    </Grid>
+</UserControl>

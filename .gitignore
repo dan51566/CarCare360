@@ -1,0 +1,51 @@
+## .NET / Visual Studio
+bin/
+obj/
+out/
+.vs/
+*.user
+*.suo
+*.userprefs
+*.userosscache
+*.sln.docstates
+*.lock.json
+*.lock.targets
+*.tlog
+*.binlog
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+## Build / publish output
+publish/
+*.pdb
+*.dll.config
+*.exe.config
+**/Properties/launchSettings.json
+
+## Rider / ReSharper
+.idea/
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+## Logs / temp
+*.log
+*.tmp
+~$*
+
+## NuGet packages cache
+packages/
+*.nupkg
+*.snupkg
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Self-contained desktop publish output (large binaries, rebuildable via dotnet publish)
+CarCare360_Publish/
+
+## Claude Code local config
+.claude/

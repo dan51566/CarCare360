@@ -1,0 +1,223 @@
+<Window x:Class="CarCare360.Desktop.Views.OrderCreateDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Новый заказ-наряд"
+        Width="520" SizeToContent="Height"
+        MinHeight="380"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource LightBackgroundBrush}">
+
+    <Window.Resources>
+        <!-- Поле с меткой: Label + контрол -->
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="#555555" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+    </Window.Resources>
+
+    <Border Padding="28,24">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" /> <!-- Заголовок -->
+                <RowDefinition Height="Auto" /> <!-- Клиент -->
+                <RowDefinition Height="Auto" /> <!-- Автомобиль -->
+                <RowDefinition Height="Auto" /> <!-- Дата/время -->
+                <RowDefinition Height="Auto" /> <!-- Примечания -->
+                <RowDefinition Height="Auto" /> <!-- Ошибка -->
+                <RowDefinition Height="Auto" /> <!-- Кнопки -->
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок диалога -->
+            <TextBlock Grid.Row="0"
+                       Text="Создание заказ-наряда"
+                       FontSize="18"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource PrimaryDarkBlueBrush}"
+                       Margin="0,0,0,20" />
+
+            <!-- Клиент -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,14">
+                <TextBlock Text="Клиент *" Style="{StaticResource FieldLabel}" />
+                <ComboBox ItemsSource="{Binding Clients}"
+                          SelectedItem="{Binding SelectedClient}"
+                          DisplayMemberPath="FullName"
+                          Padding="10,8"
+                          FontSize="14">
+                    <ComboBox.Style>
+                        <Style TargetType="ComboBox">
+                            <Setter Property="IsEnabled" Value="True" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.Style>
+                </ComboBox>
+            </StackPanel>
+
+            <!-- Автомобиль (каскадный) -->
+            <StackPanel Grid.Row="2" Margin="0,0,0,14">
+                <TextBlock Style="{StaticResource FieldLabel}">
+                    <Run Text="Автомобиль *" />
+                    <Run Text="(выберите клиента)" Foreground="#AAAAAA">
+                        <Run.Style>
+                            <Style TargetType="Run">
+                                <Setter Property="Foreground" Value="#AAAAAA" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedClient}" Value="{x:Null}">
+                                        <Setter Property="Foreground" Value="#AAAAAA" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Run.Style>
+                    </Run>
+                </TextBlock>
+                <ComboBox ItemsSource="{Binding ClientCars}"
+                          SelectedItem="{Binding SelectedCar}"
+                          Padding="10,8"
+                          FontSize="14">
+                    <ComboBox.Style>
+                        <Style TargetType="ComboBox">
+                            <Setter Property="IsEnabled" Value="True" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedClient}" Value="{x:Null}">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.Style>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <Run Text="{Binding BrandName}" FontWeight="SemiBold" />
+                                <Run Text=" " />
+                                <Run Text="{Binding ModelName}" />
+                                <Run Text=" • " Foreground="#AAAAAA" />
+                                <Run Text="{Binding LicensePlate}"
+                                     FontFamily="Consolas" />
+                            </TextBlock>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
+            <!-- Дата + Время -->
+            <Grid Grid.Row="3" Margin="0,0,0,14">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="130" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Дата -->
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Дата визита (ДД.ММ.ГГГГ)"
+                               Style="{StaticResource FieldLabel}" />
+                    <TextBox Style="{StaticResource ThemedTextBoxStyle}"
+                             Text="{Binding ScheduledDate, UpdateSourceTrigger=PropertyChanged}"
+                             MaxLength="10" />
+                </StackPanel>
+
+                <!-- Время -->
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Время (ЧЧ:ММ)"
+                               Style="{StaticResource FieldLabel}" />
+                    <TextBox Style="{StaticResource ThemedTextBoxStyle}"
+                             Text="{Binding ScheduledTime, UpdateSourceTrigger=PropertyChanged}"
+                             MaxLength="5" />
+                </StackPanel>
+            </Grid>
+
+            <!-- Примечания -->
+            <StackPanel Grid.Row="4" Margin="0,0,0,16">
+                <TextBlock Text="Примечания" Style="{StaticResource FieldLabel}" />
+                <TextBox Style="{StaticResource ThemedTextBoxStyle}"
+                         Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         Height="70"
+                         VerticalScrollBarVisibility="Auto"
+                         VerticalContentAlignment="Top" />
+            </StackPanel>
+
+            <!-- Блок ошибки -->
+            <Border Grid.Row="5"
+                    Background="#FFEBEE"
+                    CornerRadius="4"
+                    Padding="12,8"
+                    Margin="0,0,0,16">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ErrorMessage}" Value="">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="{StaticResource ErrorRedBrush}"
+                           FontSize="13"
+                           TextWrapping="Wrap" />
+            </Border>
+
+            <!-- Кнопки -->
+            <Grid Grid.Row="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Отмена -->
+                <Button Grid.Column="0"
+                        Content="Отмена"
+                        Command="{Binding CancelCommand}"
+                        Height="40"
+                        FontSize="14">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="White" />
+                            <Setter Property="Foreground" Value="{StaticResource PrimaryDarkBlueBrush}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource PrimaryDarkBlueBrush}" />
+                            <Setter Property="BorderThickness" Value="1.5" />
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="4"
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#E8EAF6" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!-- Создать -->
+                <Button Grid.Column="2"
+                        Content="  Создать заказ  "
+                        Command="{Binding SaveCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Height="40"
+                        FontSize="14" />
+            </Grid>
+
+        </Grid>
+    </Border>
+</Window>
