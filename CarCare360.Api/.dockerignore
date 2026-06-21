@@ -1,0 +1,8 @@
+# Контекст сборки образа API — исключаем всё, что не нужно для restore/publish.
+**/bin/
+**/obj/
+**/.vs/
+**/*.user
+Dockerfile
+.dockerignore
+**/appsettings.Development.json

@@ -1,0 +1,18 @@
+# Контекст сборки образа db-init (context = корень репозитория).
+# Образу нужны только каталоги SQL/ и docker/db-init/. Всё остальное — исключаем,
+# чтобы не тащить в контекст тяжёлые и лишние каталоги.
+.git/
+.claude/
+carcare_mobile/
+CarCare360_Publish/
+CarCare360.Desktop/
+CarCare360.Api/
+installer/
+**/bin/
+**/obj/
+**/*.user
+ТЗ/
+Руководство/
+Отчёт/
+*.md
+.env

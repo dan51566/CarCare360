@@ -49,3 +49,7 @@ CarCare360_Publish/
 
 ## Claude Code local config
 .claude/
+
+## Docker — реальный .env с секретами (в репозиторий идёт только .env.example)
+.env
+installer/Output/

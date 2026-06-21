@@ -1,0 +1,82 @@
+# ============================================================================
+#  CarCare360 — развёртывание серверной части (REST API + SQL Server)
+#  Запуск всего стенда одной командой:
+#      docker compose up -d --build
+#  Перед первым запуском скопируйте .env.example в .env и задайте значения.
+# ============================================================================
+name: carcare360
+
+services:
+  # ─── База данных Microsoft SQL Server ──────────────────────────────────────
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: carcare360-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Задайте MSSQL_SA_PASSWORD в файле .env}
+      MSSQL_PID: ${MSSQL_PID:-Express}
+      # Кириллическая сортировка/кодовая страница (CP1251) — как на исходном
+      # .\SQLEXPRESS. Нужна, чтобы строковые литералы без префикса N (например,
+      # имена ролей 'Администратор') не превращались в '?'. Применяется только
+      # при первичной инициализации тома данных.
+      MSSQL_COLLATION: ${MSSQL_COLLATION:-Cyrillic_General_CI_AS}
+    ports:
+      # Публикуем порт SQL Server на хост (для внешних утилит, напр. SSMS).
+      - "${DB_PORT:-1433}:1433"
+    volumes:
+      # Именованный том — данные СУБД сохраняются между перезапусками.
+      - mssql-data:/var/opt/mssql
+    healthcheck:
+      # Готовность определяем по открытому TCP-порту 1433.
+      test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+
+  # ─── Одноразовая инициализация базы данных ─────────────────────────────────
+  # Образ собирается из docker/db-init/Dockerfile: SQL-скрипты и init.sh
+  # копируются внутрь образа (а не монтируются), чтобы не зависеть от bind-mount
+  # хостовых путей — в т.ч. путей с кириллицей, которые Docker Desktop не монтирует.
+  # При изменении SQL-скриптов или init.sh пересоберите: docker compose build db-init
+  db-init:
+    build:
+      context: .
+      dockerfile: docker/db-init/Dockerfile
+    container_name: carcare360-db-init
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Задайте MSSQL_SA_PASSWORD в файле .env}
+    restart: "no"
+
+  # ─── Серверный REST API ────────────────────────────────────────────────────
+  api:
+    build:
+      context: ./CarCare360.Api
+      dockerfile: Dockerfile
+    container_name: carcare360-api
+    depends_on:
+      db:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+    environment:
+      # Development => доступен Swagger (/swagger) для проверки. Можно сменить
+      # на Production, если веб-документация на стенде не нужна.
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      ASPNETCORE_URLS: http://+:8080
+      # Строка подключения к контейнеру БД (имя сервиса db в сети compose).
+      ConnectionStrings__CarCareDb: "Server=db,1433;Database=CarCare360;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=False"
+      # Секрет подписи JWT — берётся из .env, переопределяет значение appsettings.json.
+      Jwt__Key: ${JWT_SIGNING_KEY:?Задайте JWT_SIGNING_KEY в файле .env}
+    ports:
+      # Наружу API доступен на порту API_PORT (по умолчанию 5009 — как привыкли
+      # десктоп и мобильное приложение); внутри контейнера — 8080.
+      - "${API_PORT:-5009}:8080"
+    restart: unless-stopped
+
+volumes:
+  mssql-data:
