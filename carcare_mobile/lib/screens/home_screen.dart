@@ -35,6 +35,7 @@ class HomeScreen extends ConsumerWidget {
           children: [
             _greeting(user?.fullName ?? 'Гость'),
             _quickBookButton(context),
+            _mechanicsButton(context),
             const Padding(
               padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: Text(
@@ -104,6 +105,17 @@ class HomeScreen extends ConsumerWidget {
         onPressed: () => context.push('/new-order'),
         icon: const Icon(Icons.add_circle_outline),
         label: const Text('Записаться на сервис'),
+      ),
+    );
+  }
+
+  Widget _mechanicsButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      child: OutlinedButton.icon(
+        onPressed: () => context.push('/mechanics'),
+        icon: const Icon(Icons.engineering_outlined),
+        label: const Text('Наши механики'),
       ),
     );
   }

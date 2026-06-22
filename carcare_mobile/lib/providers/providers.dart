@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import '../models/app_notification.dart';
 import '../models/car.dart';
 import '../models/car_model_ref.dart';
+import '../models/mechanic.dart';
 import '../models/order.dart';
 import '../models/requests.dart';
 import '../models/service.dart';
@@ -16,6 +17,7 @@ import '../services/car_service.dart';
 import '../services/catalog_service.dart';
 import '../services/client_service.dart';
 import '../services/avatar_service.dart';
+import '../services/mechanic_service.dart';
 import '../services/notification_service.dart';
 import '../services/order_service.dart';
 import '../services/token_storage.dart';
@@ -45,6 +47,8 @@ final catalogServiceProvider = Provider<CatalogService>(
     (ref) => CatalogService(ref.read(apiClientProvider)));
 final clientServiceProvider =
     Provider<ClientService>((ref) => ClientService(ref.read(apiClientProvider)));
+final mechanicServiceProvider = Provider<MechanicService>(
+    (ref) => MechanicService(ref.read(apiClientProvider)));
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Состояние авторизации
@@ -211,6 +215,52 @@ final orderDetailProvider = FutureProvider.family<Order, int>((ref, id) {
 final servicesProvider = FutureProvider<List<Service>>((ref) {
   return ref.read(catalogServiceProvider).getServices();
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Механики и избранное (Изменение №2, Доработка 3)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class MechanicsCatalogNotifier extends AsyncNotifier<List<MechanicCatalogItem>> {
+  MechanicService get _service => ref.read(mechanicServiceProvider);
+
+  @override
+  Future<List<MechanicCatalogItem>> build() => _service.getCatalog();
+
+  Future<void> reload() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(_service.getCatalog);
+  }
+
+  /// Переключает избранное оптимистично: звезда меняется мгновенно, без
+  /// перезагрузки экрана. При ошибке — откат к серверному состоянию.
+  Future<void> toggleFavorite(int mechanicId) async {
+    final current = state.asData?.value;
+    if (current == null) return;
+    final index = current.indexWhere((m) => m.mechanicId == mechanicId);
+    if (index < 0) return;
+
+    final item = current[index];
+    final newValue = !item.isFavorite;
+    final updated = [...current];
+    updated[index] = item.copyWith(isFavorite: newValue);
+    state = AsyncValue.data(updated);
+
+    try {
+      if (newValue) {
+        await _service.addFavorite(mechanicId);
+      } else {
+        await _service.removeFavorite(mechanicId);
+      }
+    } catch (_) {
+      await reload(); // откат к фактическому состоянию на сервере
+      rethrow;
+    }
+  }
+}
+
+final mechanicsCatalogProvider =
+    AsyncNotifierProvider<MechanicsCatalogNotifier, List<MechanicCatalogItem>>(
+        MechanicsCatalogNotifier.new);
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Уведомления

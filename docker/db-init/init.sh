@@ -5,7 +5,7 @@
 #  Выполняется ОДИН РАЗ сервисом db-init из docker-compose.yml:
 #    1) ждёт готовности SQL Server;
 #    2) создаёт базу данных CarCare360, если её ещё нет;
-#    3) применяет СУЩЕСТВУЮЩИЕ скрипты схемы 01 -> 02 -> 03 без их изменения.
+#    3) применяет СУЩЕСТВУЮЩИЕ скрипты схемы 01 -> 02 -> 03 -> 04 без их изменения.
 #
 #  Скрипты 01_Create_Database.sql и 02_Create_Triggers.sql НЕ идемпотентны
 #  (CREATE TABLE/TRIGGER без проверок существования) и НЕ транзакционны
@@ -23,8 +23,8 @@
 #              пропуск оставил бы схему битой — поэтому ОСТАНАВЛИВАЕМСЯ с понятной
 #              инструкцией (это и есть защита от сценария «сбой на середине 02»).
 #
-#  Скрипт 03_Create_RefreshTokens.sql идемпотентен сам по себе (IF OBJECT_ID IS NULL)
-#  и применяется всегда, кроме состояния PARTIAL.
+#  Скрипты 03_Create_RefreshTokens.sql и 04_Create_FavoriteMechanics.sql идемпотентны
+#  сами по себе (IF OBJECT_ID IS NULL) и применяются всегда, кроме состояния PARTIAL.
 # ============================================================================
 set -uo pipefail
 
@@ -95,5 +95,9 @@ esac
 echo "[db-init] Применение 03_Create_RefreshTokens.sql..."
 sql -d CarCare360 -b -i /sql/03_Create_RefreshTokens.sql \
   || { echo "[db-init] ОШИБКА в 03_Create_RefreshTokens.sql." >&2; exit 1; }
+
+echo "[db-init] Применение 04_Create_FavoriteMechanics.sql..."
+sql -d CarCare360 -b -i /sql/04_Create_FavoriteMechanics.sql \
+  || { echo "[db-init] ОШИБКА в 04_Create_FavoriteMechanics.sql." >&2; exit 1; }
 
 echo "[db-init] Инициализация базы данных завершена успешно."

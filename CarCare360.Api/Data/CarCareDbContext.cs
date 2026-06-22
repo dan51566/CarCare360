@@ -79,6 +79,11 @@ public class CarCareDbContext : DbContext
     /// <summary>Refresh-токены для обновления JWT.</summary>
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
+    // ===== Избранные механики (новая таблица, Изменение №2, Доработка 3) =====
+
+    /// <summary>Избранные механики клиентов (мобильное приложение).</summary>
+    public DbSet<FavoriteMechanic> FavoriteMechanics { get; set; } = null!;
+
     /// <summary>
     /// Настройка модели: индексы, уникальные ограничения, явные FK для
     /// неоднозначных связей (несколько FK от одной сущности к User).
@@ -154,6 +159,26 @@ public class CarCareDbContext : DbContext
             .WithMany(u => u.RefreshTokens)
             .HasForeignKey(rt => rt.UserID)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // ── FavoriteMechanics: уникальная пара (UserID, MechanicID) + FK ───
+        modelBuilder.Entity<FavoriteMechanic>()
+            .HasIndex(f => new { f.UserID, f.MechanicID })
+            .IsUnique()
+            .HasDatabaseName("UQ_FavoriteMechanics");
+
+        // FK на User — каскадное удаление (избранное — личные данные клиента).
+        modelBuilder.Entity<FavoriteMechanic>()
+            .HasOne(f => f.User)
+            .WithMany()
+            .HasForeignKey(f => f.UserID)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // FK на Mechanic — без каскада (механики деактивируются, не удаляются).
+        modelBuilder.Entity<FavoriteMechanic>()
+            .HasOne(f => f.Mechanic)
+            .WithMany()
+            .HasForeignKey(f => f.MechanicID)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // ── Триггеры аудита: EF Core должен знать о них, чтобы не использовать
         //    OUTPUT clause при INSERT (иначе — ошибка «target table has database triggers»).

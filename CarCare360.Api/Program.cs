@@ -62,6 +62,7 @@ builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICatalogService, CatalogService>();
 builder.Services.AddScoped<IMechanicService, MechanicService>();
+builder.Services.AddScoped<IFavoriteMechanicService, FavoriteMechanicService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 

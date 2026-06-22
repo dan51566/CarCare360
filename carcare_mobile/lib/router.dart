@@ -9,6 +9,7 @@ import 'screens/cars_list_screen.dart';
 import 'screens/edit_profile_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/mechanics_screen.dart';
 import 'screens/new_order_screen.dart';
 import 'screens/notifications_screen.dart';
 import 'screens/order_detail_screen.dart';
@@ -92,6 +93,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/new-order',
         parentNavigatorKey: _rootKey,
         pageBuilder: (_, s) => _fade(const NewOrderScreen(), s),
+      ),
+      GoRoute(
+        path: '/mechanics',
+        parentNavigatorKey: _rootKey,
+        pageBuilder: (_, s) => _fade(const MechanicsScreen(), s),
       ),
       GoRoute(
         path: '/add-car',
