@@ -235,6 +235,17 @@
                             <TextBlock Text="Аудит" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
+                    <Button Command="{Binding NavigateLoginAuditCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Visibility="{Binding IsLoginAuditVisible,
+                                         Converter={StaticResource BoolToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="16" Width="16" VerticalAlignment="Center"
+                                       Margin="0,0,12,0"/>
+                            <TextBlock Text="Аудит входов" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                     <Button Command="{Binding NavigateReportsCommand}"
                             Style="{StaticResource NavigationButtonStyle}"
                             Visibility="{Binding IsReportsVisible,

@@ -104,6 +104,8 @@ public sealed class ClientMainViewModel : BaseViewModel
 
     private static void ExecuteLogout()
     {
+        // Аудит входа (Доработка 4): фиксируем время выхода текущей сессии.
+        LoginAuditService.RecordLogout();
         CurrentUser.Logout();
         new LoginWindow().Show();
         foreach (Window w in Application.Current.Windows)

@@ -44,6 +44,20 @@ public partial class App : Application
         new LoginWindow().Show();
     }
 
+    /// <summary>
+    /// Завершение приложения — проставляем время выхода в журнале аудита входов
+    /// (Доработка 4).
+    /// ВНИМАНИЕ: при ПРИНУДИТЕЛЬНОМ завершении (Диспетчер задач / kill процесса)
+    /// OnExit НЕ вызывается, поэтому LogoutAt останется NULL. При анализе журнала
+    /// NULL в LogoutAt означает либо активную сессию, либо аварийное завершение —
+    /// это ожидаемое поведение, а не ошибка.
+    /// </summary>
+    protected override void OnExit(ExitEventArgs e)
+    {
+        LoginAuditService.RecordLogout();
+        base.OnExit(e);
+    }
+
     private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         WriteLog("Unhandled dispatcher exception", e.Exception);

@@ -1,0 +1,223 @@
+<UserControl x:Class="CarCare360.Desktop.Views.LoginAuditView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:CarCare360.Desktop.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="1100">
+
+    <Grid Background="{StaticResource LightBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />  <!-- Заголовок -->
+            <RowDefinition Height="Auto" />  <!-- Фильтры -->
+            <RowDefinition Height="*"    />  <!-- DataGrid -->
+            <RowDefinition Height="Auto" />  <!-- Статусбар -->
+        </Grid.RowDefinitions>
+
+        <!-- ══ Заголовок ═══════════════════════════════════════════════════ -->
+        <Border Grid.Row="0" Background="White"
+                BorderBrush="{StaticResource BorderGrayBrush}"
+                BorderThickness="0,0,0,1" Padding="24,16">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets"
+                           FontSize="24" VerticalAlignment="Center"
+                           Foreground="{StaticResource PrimaryDarkBlueBrush}"
+                           Margin="0,0,12,0"/>
+                <TextBlock Text="Аудит входов" FontSize="22" FontWeight="SemiBold"
+                           Foreground="{StaticResource PrimaryDarkBlueBrush}" />
+            </StackPanel>
+        </Border>
+
+        <!-- ══ Панель фильтров ══════════════════════════════════════════════ -->
+        <Border Grid.Row="1" Background="White"
+                BorderBrush="{StaticResource BorderGrayBrush}"
+                BorderThickness="0,0,0,1" Padding="16,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Логин -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Логин:" VerticalAlignment="Center"
+                               FontSize="12" Foreground="#666" Margin="0,0,6,0"/>
+                    <Border BorderBrush="{StaticResource BorderGrayBrush}"
+                            BorderThickness="1" CornerRadius="6" Width="160">
+                        <TextBox Style="{StaticResource ThemedTextBoxStyle}"
+                                 BorderThickness="0"
+                                 Text="{Binding LoginFilter, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Border>
+                </StackPanel>
+
+                <!-- Результат -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Результат:" VerticalAlignment="Center"
+                               FontSize="12" Foreground="#666" Margin="0,0,6,0"/>
+                    <ComboBox Width="110" VerticalAlignment="Center"
+                              ItemsSource="{x:Static vm:LoginAuditViewModel.AllResults}"
+                              SelectedItem="{Binding SelectedResult}"/>
+                </StackPanel>
+
+                <!-- Дата от -->
+                <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="С:" VerticalAlignment="Center"
+                               FontSize="12" Foreground="#666" Margin="0,0,6,0"/>
+                    <DatePicker Width="130" VerticalAlignment="Center"
+                                SelectedDate="{Binding DateFrom, TargetNullValue={x:Null}}"
+                                SelectedDateFormat="Short"/>
+                </StackPanel>
+
+                <!-- Дата до -->
+                <StackPanel Grid.Column="6" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="По:" VerticalAlignment="Center"
+                               FontSize="12" Foreground="#666" Margin="0,0,6,0"/>
+                    <DatePicker Width="130" VerticalAlignment="Center"
+                                SelectedDate="{Binding DateTo, TargetNullValue={x:Null}}"
+                                SelectedDateFormat="Short"/>
+                </StackPanel>
+
+                <!-- Применить -->
+                <Button Grid.Column="8" Content="▶  Применить" Command="{Binding ApplyCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- ══ DataGrid ════════════════════════════════════════════════════ -->
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding Logs}"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  SelectionMode="Single" GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column" AlternatingRowBackground="#FAFAFA"
+                  RowBackground="White" BorderThickness="0"
+                  CanUserResizeRows="False" CanUserReorderColumns="False"
+                  FontSize="13" Margin="16,8,16,0">
+
+            <DataGrid.Resources>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="{StaticResource PrimaryDarkBlueBrush}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="FontSize" Value="11"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="Padding" Value="8,10"/>
+                    <Setter Property="Height" Value="38"/>
+                    <Setter Property="BorderBrush" Value="#283593"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,0"/>
+                </Style>
+            </DataGrid.Resources>
+
+            <!-- Подозрительные логины — красная подсветка строки + подсказка -->
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Height" Value="34"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSuspicious}" Value="True">
+                            <Setter Property="Background" Value="#FFEBEE"/>
+                            <Setter Property="ToolTip"
+                                    Value="5+ неудачных попыток входа подряд за 15 минут — возможен подбор пароля"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+
+            <DataGrid.Columns>
+
+                <!-- Индикатор подозрительности (⚠ для подозрительных логинов) -->
+                <DataGridTemplateColumn Header="" Width="34" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       FontSize="14" Foreground="#C62828">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value=""/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSuspicious}" Value="True">
+                                                <Setter Property="Text" Value="&#x26A0;"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Логин -->
+                <DataGridTextColumn Header="Логин" Binding="{Binding Login}" Width="180">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <!-- Результат -->
+                <DataGridTextColumn Header="Результат" Binding="{Binding ResultLabel}" Width="110">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="Foreground" Value="#2E7D32"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSuccess}" Value="False">
+                                    <Setter Property="Foreground" Value="#C62828"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <!-- Вход -->
+                <DataGridTextColumn Header="Вход"
+                                    Binding="{Binding LoginAt, StringFormat=\{0:dd.MM.yyyy HH:mm:ss\}}"
+                                    Width="180">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontFamily" Value="Consolas"/>
+                            <Setter Property="Foreground" Value="#555555"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <!-- Выход -->
+                <DataGridTextColumn Header="Выход"
+                                    Binding="{Binding LogoutAt, StringFormat=\{0:dd.MM.yyyy HH:mm:ss\}, TargetNullValue=—}"
+                                    Width="*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontFamily" Value="Consolas"/>
+                            <Setter Property="Foreground" Value="#777777"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- ══ Статусбар ══════════════════════════════════════════════════ -->
+        <Border Grid.Row="3" Background="White"
+                BorderBrush="{StaticResource BorderGrayBrush}"
+                BorderThickness="0,1,0,0" Padding="24,8">
+            <Grid>
+                <TextBlock Text="{Binding StatusMessage}"
+                           Foreground="#666666" FontSize="12" VerticalAlignment="Center"/>
+                <ProgressBar HorizontalAlignment="Right" Width="120" Height="4"
+                             IsIndeterminate="True"
+                             Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

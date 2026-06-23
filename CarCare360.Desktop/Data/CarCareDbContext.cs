@@ -71,6 +71,9 @@ public class CarCareDbContext : DbContext
     /// <summary>Журнал аудита (заполняется триггерами SQL Server).</summary>
     public DbSet<AuditLog> AuditLogs { get; set; } = null!;
 
+    /// <summary>Журнал аудита входов (Изменение №2, Доработка 4).</summary>
+    public DbSet<LoginAuditLog> LoginAuditLogs { get; set; } = null!;
+
     /// <summary>
     /// Настройка подключения к SQL Server через строку из App.config.
     /// </summary>
@@ -148,6 +151,14 @@ public class CarCareDbContext : DbContext
         // ── Таблица AuditLog имеет PK bigint ──────────────────────────────
         modelBuilder.Entity<AuditLog>()
             .Property(a => a.LogID)
+            .HasColumnType("bigint");
+
+        // ── LoginAuditLog: Result CHAR(1) + PK bigint (Доработка 4) ────────
+        modelBuilder.Entity<LoginAuditLog>()
+            .Property(l => l.Result)
+            .HasColumnType("char(1)");
+        modelBuilder.Entity<LoginAuditLog>()
+            .Property(l => l.LogID)
             .HasColumnType("bigint");
 
         // ── Триггеры аудита: EF Core должен знать о них, чтобы не использовать

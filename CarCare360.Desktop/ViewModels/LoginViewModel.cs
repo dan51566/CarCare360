@@ -134,6 +134,8 @@ public sealed class LoginViewModel : BaseViewModel
             // Пользователь не найден — не раскрываем причину
             if (user is null)
             {
+                // Аудит входа (Доработка 4): логин не существует → UserID = null.
+                await LoginAuditService.RecordAttemptAsync(loginKey, LoginAuditService.Failed, null);
                 ErrorMessage = "Неверный логин или пароль";
                 return;
             }
@@ -141,6 +143,8 @@ public sealed class LoginViewModel : BaseViewModel
             // Учётная запись заблокирована
             if (user.IsActive == false)
             {
+                // Аудит входа (Доработка 4): попытка входа в заблокированную учётку.
+                await LoginAuditService.RecordAttemptAsync(loginKey, LoginAuditService.Failed, user.UserID);
                 ErrorMessage = "Учётная запись заблокирована. Обратитесь к администратору.";
                 return;
             }
@@ -152,6 +156,9 @@ public sealed class LoginViewModel : BaseViewModel
 
             if (!passwordValid)
             {
+                // Аудит входа (Доработка 4): неверный пароль (логин существует).
+                await LoginAuditService.RecordAttemptAsync(loginKey, LoginAuditService.Failed, user.UserID);
+
                 // Увеличиваем in-memory счётчик для этого логина
                 var count = FailedAttempts.AddOrUpdate(
                     loginKey.ToLowerInvariant(),
@@ -195,6 +202,10 @@ public sealed class LoginViewModel : BaseViewModel
             CurrentUser.Login    = user.Login;
             CurrentUser.Phone    = user.Phone;
             CurrentUser.Email    = user.Email;
+
+            // Аудит входа (Доработка 4): успех. Запись синхронно, ДО открытия окна;
+            // сбой журналирования не прерывает вход (сервис не бросает исключений).
+            await LoginAuditService.RecordAttemptAsync(loginKey, LoginAuditService.Success, user.UserID);
 
             OpenMainWindow();
             CloseLoginWindow();

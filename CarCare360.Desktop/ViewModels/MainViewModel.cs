@@ -28,6 +28,7 @@ public sealed class MainViewModel : BaseViewModel
         NavigateMechanicsCommand  = new RelayCommand(() => CurrentView = new MechanicsView());
         NavigateReferencesCommand = new RelayCommand(() => CurrentView = new ReferencesView());
         NavigateAuditCommand      = new RelayCommand(() => CurrentView = new AuditView());
+        NavigateLoginAuditCommand = new RelayCommand(() => CurrentView = new LoginAuditView());
         NavigateReportsCommand    = new RelayCommand(() => CurrentView = new ReportsView());
         NavigateProfileCommand    = new RelayCommand(() => CurrentView = new ProfileView());
         LogoutCommand             = new RelayCommand(ExecuteLogout);
@@ -97,6 +98,7 @@ public sealed class MainViewModel : BaseViewModel
     public bool IsWarehouseVisible  => true;           // механики видят (read-only)
     public bool IsReferencesVisible => !IsMechanic;
     public bool IsAuditVisible      => !IsMechanic;
+    public bool IsLoginAuditVisible => !IsMechanic;   // «Аудит входов» — только администратор
     public bool IsReportsVisible    => !IsMechanic;
 
     private bool IsMechanic =>
@@ -111,6 +113,7 @@ public sealed class MainViewModel : BaseViewModel
     public ICommand NavigateMechanicsCommand  { get; }
     public ICommand NavigateReferencesCommand { get; }
     public ICommand NavigateAuditCommand      { get; }
+    public ICommand NavigateLoginAuditCommand { get; }
     public ICommand NavigateReportsCommand    { get; }
     public ICommand NavigateProfileCommand    { get; }
     public ICommand LogoutCommand             { get; }
@@ -154,6 +157,8 @@ public sealed class MainViewModel : BaseViewModel
 
     private static void ExecuteLogout()
     {
+        // Аудит входа (Доработка 4): фиксируем время выхода текущей сессии.
+        LoginAuditService.RecordLogout();
         CurrentUser.Logout();
 
         var login = new LoginWindow();
